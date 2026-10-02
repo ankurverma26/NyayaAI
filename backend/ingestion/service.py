@@ -127,7 +127,7 @@ async def ingest_contract(
             text=ec.text,
             clause_type=ec.clause_type,
             page=ec.page,
-            clause_label=c.clause_label,
+            clause_label=ec.clause_label,
         )
         session.add(cl)
         clause_records.append(cl)
