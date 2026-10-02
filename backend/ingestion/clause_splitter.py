@@ -24,6 +24,7 @@ class ExtractedClause:
     text: str
     clause_type: str
     page: Optional[int] = 1
+    clause_label: Optional[str] = None
 
 
 # ── Heuristic Clause Type Classifier ──────────────────────────────────────────
@@ -120,6 +121,10 @@ HEADER_EXTRACTOR = re.compile(
     re.MULTILINE,
 )
 
+LABEL_EXTRACTOR = re.compile(
+    r"^((?:Clause|CLAUSE|Section|SECTION|Article|ARTICLE)\s+(?:[0-9IVXLCDM]+|[A-Z])"
+    r"|[0-9]{1,2}(?:\.[0-9]{1,2})*|\([0-9a-z]\))(?=[\.\:\s\-]|$)"
+)
 
 def _clean_text(text: str) -> str:
     """Normalize linebreaks and spaces."""
@@ -191,6 +196,9 @@ def split_into_clauses(doc: ParsedDocument) -> list[ExtractedClause]:
         clause_type = classify_clause_type(heading, chunk)
         page = _estimate_page_for_clause(clause_body, doc)
 
+        lm = LABEL_EXTRACTOR.match(first_line)
+        clause_label = lm.group(1) if lm else None
+
         clauses.append(
             ExtractedClause(
                 clause_number=idx,
@@ -198,6 +206,7 @@ def split_into_clauses(doc: ParsedDocument) -> list[ExtractedClause]:
                 text=clause_body,
                 clause_type=clause_type,
                 page=page,
+                clause_label=clause_label,
             )
         )
 

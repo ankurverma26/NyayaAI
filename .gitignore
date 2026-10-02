@@ -42,3 +42,5 @@ desktop.ini
 # Hugging Face model cache (large binary files)
 # These are downloaded at runtime, not committed
 .cache/
+
+tree.txt

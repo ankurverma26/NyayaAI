@@ -133,7 +133,7 @@ class Clause(Base):
     contract_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("contracts.id", ondelete="CASCADE"), nullable=False
     )
-    clause_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    clause_number: Mapped[str] = mapped_column(String(40), nullable=False)
     heading: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
     clause_type: Mapped[Optional[str]] = mapped_column(String(60), nullable=True)
