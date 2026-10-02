@@ -1,0 +1,28 @@
+{
+  "act": "Arbitration and Conciliation Act, 1996",
+  "short_name": "ACA1996",
+  "year": 1996,
+  "citation": "Act No. 26 of 1996",
+  "url": "https://www.indiacode.nic.in/handle/123456789/1978",
+  "status": "in_force",
+  "jurisdiction": "india",
+  "source_type": "act",
+  "authority": "parliament",
+  "sections": [
+    {
+      "section_number": "7",
+      "heading": "Arbitration agreement",
+      "text": "(1) In this Part, 'arbitration agreement' means an agreement by the parties to submit to arbitration all or certain disputes which have arisen or which may arise between them in respect of a defined legal relationship, whether contractual or not. (2) An arbitration agreement may be in the form of an arbitration clause in a contract or in the form of a separate agreement. (3) An arbitration agreement shall be in writing. (4) An arbitration agreement is in writing if it is contained in— (a) a document signed by the parties; (b) an exchange of letters, telex, telegrams or other means of telecommunication including communication through electronic means which provide a record of the agreement; or (c) an exchange of statements of claim and defence in which the existence of the agreement is alleged by one party and not denied by the other. (5) The reference in a contract to a document containing an arbitration clause constitutes an arbitration agreement if the contract is in writing and the reference is such as to make that arbitration clause part of the contract."
+    },
+    {
+      "section_number": "8",
+      "heading": "Power to refer parties to arbitration where there is an arbitration agreement",
+      "text": "(1) A judicial authority, before which an action is brought in a matter which is the subject of an arbitration agreement shall, if a party to the arbitration agreement or any person claiming through or under him, so applies not later than the date of submitting his first statement on the substance of the dispute, then, notwithstanding any judgment, decree or order of the Supreme Court or any Court, refer the parties to arbitration unless it finds that prima facie no valid arbitration agreement exists. (2) The application referred to in sub-section (1) shall not be entertained unless it is accompanied by the original arbitration agreement or a duly certified copy thereof: Provided that where the original arbitration agreement or a certified copy thereof is with the other party to the arbitration agreement or the arbitration proceeding, or has been retained in the custody of a Court, and a party who has applied has also applied to the Court for production of the same, the Court shall call upon such other party to produce the original agreement or certified copy thereof. (3) Notwithstanding that an application has been made under sub-section (1) and that the issue is pending before the judicial authority, an arbitration may be commenced or continued and an arbitral award made."
+    },
+    {
+      "section_number": "11",
+      "heading": "Appointment of arbitrators",
+      "text": "(1) A person of any nationality may be an arbitrator, unless otherwise agreed by the parties. (2) Subject to sub-section (6), the parties are free to agree on a procedure for appointing the arbitrator or arbitrators. (3) Failing any agreement referred to in sub-section (2), in an arbitration with three arbitrators, each party shall appoint one arbitrator, and the two appointed arbitrators shall appoint the third arbitrator who shall act as the presiding arbitrator. (4) If the appointment procedure in sub-section (3) applies and— (a) a party fails to appoint an arbitrator within thirty days from the receipt of a request to do so from the other party; or (b) the two appointed arbitrators fail to agree on the third arbitrator within thirty days from the date of their appointment, the appointment shall be made, upon request of a party, by the arbitral institution designated by the Supreme Court, in case of international commercial arbitration, or by the High Court, in case of arbitrations other than international commercial arbitration. (5) Failing any agreement referred to in sub-section (2), in an arbitration with a sole arbitrator, if the parties fail to agree on the arbitrator within thirty days from receipt of a request by one party from the other party to so agree the appointment shall be made on the request of the party in accordance with sub-section (4). (6) Where, under an appointment procedure agreed upon by the parties,— (a) a party fails to act as required under that procedure; or (b) the parties, or the two appointed arbitrators, fail to reach an agreement expected of them under that procedure; or (c) a person, including an institution, fails to perform any function entrusted to him or it under that procedure, a party may request the arbitral institution designated by the Supreme Court or the High Court to take the necessary measure, unless the agreement on the appointment procedure provides other means for securing the appointment."
+    }
+  ]
+}

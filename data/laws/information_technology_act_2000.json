@@ -1,0 +1,23 @@
+{
+  "act": "Information Technology Act, 2000",
+  "short_name": "ITA2000",
+  "year": 2000,
+  "citation": "Act No. 21 of 2000",
+  "url": "https://www.indiacode.nic.in/handle/123456789/1999",
+  "status": "in_force",
+  "jurisdiction": "india",
+  "source_type": "act",
+  "authority": "parliament",
+  "sections": [
+    {
+      "section_number": "43A",
+      "heading": "Compensation for failure to protect data",
+      "text": "Where a body corporate, possessing, dealing or handling any sensitive personal data or information in a computer resource which it owns, controls or operates, is negligent in implementing and maintaining reasonable security practices and procedures and thereby causes wrongful loss or wrongful gain to any person, such body corporate shall be liable to pay damages by way of compensation to the person so affected. Explanation.—For the purposes of this section— (i) 'body corporate' means any company, firm, sole proprietorship or other association of individuals engaged in commercial or professional activities; (ii) 'reasonable security practices and procedures' means security practices and procedures designed to protect such information from unauthorised access, damage, use, modification, disclosure or impairment, as may be specified in an agreement between the parties or as may be specified in any law in force; (iii) 'sensitive personal data or information' means such personal information as may be prescribed by the Central Government in consultation with such professional bodies or associations as it may consider necessary."
+    },
+    {
+      "section_number": "72A",
+      "heading": "Punishment for disclosure of information in breach of lawful contract",
+      "text": "Save as otherwise provided in this Act or any other law for the time being in force, any person including an intermediary who, while providing services under the terms of lawful contract, has secured access to any material containing personal information about another person, with the intent to cause or knowing that he is likely to cause wrongful loss or wrongful gain discloses, without the consent of the person concerned, or in breach of a lawful contract, such material to any other person, shall be punished with imprisonment for a term which may extend to three years, or with a fine which may extend to five lakh rupees, or with both."
+    }
+  ]
+}

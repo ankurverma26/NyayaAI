@@ -1,0 +1,8 @@
+Clause 1. Services
+Consultant will provide AI services.
+
+Clause 2. Non-Competition
+Consultant shall not compete for 3 years.
+
+Clause 3. Indemnity
+Consultant will indemnify client.

@@ -1,0 +1,50 @@
+{
+  "act": "PLACEHOLDER — Replace with the full official title of the Act",
+  "short_name": "ICA1872",
+  "year": 1872,
+  "citation": "PLACEHOLDER — e.g. 'Act No. 9 of 1872'",
+  "url": "PLACEHOLDER — e.g. 'https://indiacode.nic.in/handle/123456789/2187'",
+  "retrieved_on": "2024-01-01",
+  "status": "in_force",
+  "jurisdiction": "india",
+  "source_type": "act",
+  "authority": "parliament",
+  "sections": [
+    {
+      "section_number": "1",
+      "heading": "PLACEHOLDER — Short title, extent and commencement",
+      "text": "PLACEHOLDER — Paste the verbatim statutory text of Section 1 here. Do NOT paraphrase or summarise.",
+      "notes": "Optional editorial notes or case cross-references"
+    },
+    {
+      "section_number": "2",
+      "heading": "PLACEHOLDER — Interpretation clause",
+      "text": "PLACEHOLDER — Paste the verbatim statutory text of Section 2 here.",
+      "notes": null
+    },
+    {
+      "section_number": "27",
+      "heading": "PLACEHOLDER — Agreement in restraint of trade, void",
+      "text": "PLACEHOLDER — Paste the verbatim statutory text of Section 27 here.",
+      "notes": "Void under Indian law per Section 27 (Percept D'Mark v Zaheer Khan)"
+    }
+  ],
+  "_schema_notes": {
+    "act": "Full official name of the statute (string, required)",
+    "short_name": "UPPERCASE abbreviation with year without separator, e.g. ICA1872, ACA1996, ITA2000 (string, optional)",
+    "year": "Year of enactment as integer (required)",
+    "citation": "Official citation / act number (string, optional)",
+    "url": "Canonical URL for the statute text on indiacode.nic.in (string, optional)",
+    "retrieved_on": "Date retrieved from official source in YYYY-MM-DD format (string, optional)",
+    "status": "One of: in_force | amended | repealed | draft | verify_current_status (string, required)",
+    "jurisdiction": "ISO-style tag: india | uk | us | … (string, required)",
+    "source_type": "One of: act | regulation | judgment | notification | circular (string, required)",
+    "authority": "One of: parliament | state_legislature | supreme_court | high_court | tribunal (string, optional)",
+    "sections": "Array of section objects (required, at least one entry)",
+    "sections[].section_number": "Section number as STRING — always strings like '27', '43A', 'Schedule II' (required)",
+    "sections[].heading": "Section heading / title (string, optional)",
+    "sections[].text": "VERBATIM statutory text — never paraphrased (string, required)",
+    "sections[].notes": "Editorial or cross-reference notes (string, optional)",
+    "_ignored": "Any top-level key beginning with '_' is automatically ignored by the loader"
+  }
+}
