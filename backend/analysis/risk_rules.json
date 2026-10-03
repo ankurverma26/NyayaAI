@@ -1,0 +1,361 @@
+{
+  "version": "1.0",
+  "note": "Rules map clause patterns to cautious findings. Statute text comes only from the database.",
+  "restraint_scope": {
+    "post": [
+      "\\b(after|following|upon|post)[\\s\\-]*(the\\s+)?(termination|cessation|expiry|expiration|resignation|separation|leaving|exit)\\b",
+      "\\bpost[\\s\\-]?(employment|termination|resignation)\\b",
+      "\\b(after|following)\\s+(he|she|the\\s+employee|you|the\\s+contractor|the\\s+consultant)?\\s*(leaves?|ceases?|resigns?|is\\s+terminated|has\\s+left)\\b",
+      "\\bafter\\s+(leaving|ceasing|resigning)\\b",
+      "\\bwithin\\s+[^.]{0,30}\\b(months?|years?)\\s+of\\s+(leaving|termination|resignation|cessation)\\b"
+    ],
+    "during": [
+      "\\bduring\\s+(the\\s+)?(term|period|course|continuance|tenure|subsistence)\\s+of\\s+(his\\s+|her\\s+|their\\s+|the\\s+|this\\s+)?(employment|engagement|service|agreement|appointment)\\b",
+      "\\bwhile\\s+(the\\s+)?(employee\\s+)?(is\\s+)?(employed|in\\s+(the\\s+)?(service|employment))\\b",
+      "\\bthroughout\\s+(the\\s+)?(term\\s+of\\s+)?(his\\s+|her\\s+)?(employment|engagement)\\b",
+      "\\bduring\\s+(his|her)\\s+employment\\b"
+    ]
+  },
+  "rules": [
+    {
+      "id": "R001_post_employment_non_compete",
+      "applies_to": [
+        "non_compete"
+      ],
+      "scope": "post_employment",
+      "doc_types": [
+        "employment",
+        "other"
+      ],
+      "risk_level": "high",
+      "category": "non_compete",
+      "title": "Post-employment non-compete restriction",
+      "reason": "This clause appears to restrict the person from working in a competing business after the relationship ends{duration}. Post-employment restraints of this kind may raise issues under the restraint-of-trade provision identified below. This is a potential issue that requires professional legal review; it is not a determination about enforceability.",
+      "recommendation": "Have a qualified lawyer review this clause before signing. Consider whether confidentiality and IP clauses can protect the business interest instead of a post-employment restriction.",
+      "retrieval_query": "restraint of trade after employment agreement restraining lawful profession trade or business",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "27"
+      }
+    },
+    {
+      "id": "R002_post_term_restraint_commercial",
+      "applies_to": [
+        "non_compete"
+      ],
+      "scope": "post_employment",
+      "doc_types": [
+        "service",
+        "nda",
+        "lease",
+        "loan"
+      ],
+      "risk_level": "medium",
+      "category": "non_compete",
+      "title": "Restriction on competing after the agreement ends",
+      "reason": "This clause appears to restrict a party from competing after the agreement ends{duration}. Restrictions of this kind may raise issues under the restraint-of-trade provision identified below, depending on their scope and context. Potential issue; requires professional legal review.",
+      "recommendation": "Have a qualified lawyer review the scope, duration and geography of this restriction.",
+      "retrieval_query": "restraint of trade agreement restraining lawful profession trade or business",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "27"
+      }
+    },
+    {
+      "id": "R003_non_compete_scope_unclear",
+      "applies_to": [
+        "non_compete"
+      ],
+      "scope": "unclear",
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "non_compete",
+      "title": "Competition restriction with unclear timing",
+      "reason": "This clause restricts competing activity, but it is unclear from the wording whether the restriction applies only during the relationship or also after it ends{duration}. If it applies after the relationship ends, it may raise issues under the restraint-of-trade provision identified below. Requires review.",
+      "recommendation": "Clarify the period of the restriction in the clause, and have it reviewed by a qualified lawyer.",
+      "retrieval_query": "restraint of trade agreement restraining lawful profession trade or business",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "27"
+      }
+    },
+    {
+      "id": "R004_non_compete_during_only",
+      "applies_to": [
+        "non_compete"
+      ],
+      "scope": "during_only",
+      "doc_types": null,
+      "risk_level": "low",
+      "category": "non_compete",
+      "title": "Competition restriction limited to the relationship period",
+      "reason": "This clause appears to restrict competing activity only while the relationship continues{duration}. Restrictions operating during the relationship may be assessed differently from post-employment restraints, but the wording should still be reviewed.",
+      "recommendation": "Confirm that the clause is limited to the period of the relationship and that its scope is reasonable.",
+      "retrieval_query": "restraint of trade agreement restraining lawful profession trade or business",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "27"
+      }
+    },
+    {
+      "id": "R005_non_solicitation_post_term",
+      "applies_to": [
+        "non_solicitation"
+      ],
+      "scope": "post_employment",
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "non_solicitation",
+      "title": "Post-termination non-solicitation restriction",
+      "reason": "This clause appears to restrict soliciting clients or employees after the relationship ends{duration}. Depending on its scope, it may be treated as a restraint on trade or business. Potential issue; requires professional legal review.",
+      "recommendation": "Have a qualified lawyer review the scope and duration of the non-solicitation restriction.",
+      "retrieval_query": "restraint of trade agreement restraining lawful profession trade or business",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "27"
+      }
+    },
+    {
+      "id": "R006_penalty_or_liquidated_damages",
+      "applies_to": [
+        "penalty"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "penalty",
+      "title": "Fixed sum, penalty or forfeiture on breach",
+      "reason": "This clause stipulates a fixed sum, penalty, bond or forfeiture payable on breach or early exit. Whether the stated amount is a reasonable pre-estimate of loss, or operates as a penalty, requires review in light of the provision identified below. Potential issue; requires professional legal review.",
+      "recommendation": "Check whether the amount is proportionate to the likely loss and whether it applies equally to both parties.",
+      "retrieval_query": "compensation for breach of contract where penalty stipulated for liquidated damages",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "74"
+      }
+    },
+    {
+      "id": "R007_indemnity_without_cap",
+      "applies_to": [
+        "indemnity"
+      ],
+      "match_none": [
+        "\\bcap(ped)?\\b",
+        "not\\s+exceed",
+        "\\bmaximum\\b",
+        "\\baggregate\\b",
+        "limited\\s+to",
+        "up\\s+to\\s+(an\\s+amount|the\\s+(total|fees|amount))"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "indemnity",
+      "title": "Indemnity with no apparent limit",
+      "reason": "This indemnity clause does not appear to contain a cap or limit on the amount payable. Open-ended indemnities can create significant financial exposure. Potential issue; requires review.",
+      "recommendation": "Consider whether a monetary cap, exclusions or mutual indemnities are appropriate, with legal advice.",
+      "retrieval_query": "contract of indemnity loss caused by promisor",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "124"
+      }
+    },
+    {
+      "id": "R008_liability_unlimited",
+      "applies_to": [
+        "liability"
+      ],
+      "match_any": [
+        "\\bunlimited\\b",
+        "\\buncapped\\b",
+        "without\\s+(any\\s+)?(limit|cap)",
+        "no\\s+(limit|cap)\\s+on"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "liability",
+      "title": "Unlimited liability wording",
+      "reason": "This clause appears to provide for unlimited or uncapped liability. This may create significant financial exposure. Potential issue; requires review.",
+      "recommendation": "Consider whether a liability cap or exclusions are appropriate, with legal advice.",
+      "retrieval_query": "compensation for loss or damage caused by breach of contract",
+      "expected_section": {
+        "act_keyword": "contract",
+        "number": "73"
+      }
+    },
+    {
+      "id": "R009_arbitration_seat_unclear",
+      "applies_to": [
+        "arbitration"
+      ],
+      "match_none": [
+        "\\bseat\\b",
+        "\\bvenue\\b",
+        "place\\s+of\\s+arbitration",
+        "(held|conducted|take\\s+place|seated)\\s+(in|at)\\b"
+      ],
+      "doc_types": null,
+      "risk_level": "low",
+      "category": "arbitration",
+      "title": "Arbitration clause without a clear seat or venue",
+      "reason": "This arbitration clause does not appear to state the seat or venue of arbitration. An unclear seat can lead to disputes about which courts supervise the arbitration. Requires review.",
+      "recommendation": "Consider specifying the seat/venue, language and number of arbitrators.",
+      "retrieval_query": "arbitration agreement in writing",
+      "expected_section": {
+        "act_keyword": "arbitration",
+        "number": "7"
+      }
+    },
+    {
+      "id": "R010_arbitrator_unilateral_appointment",
+      "applies_to": [
+        "arbitration"
+      ],
+      "match_any": [
+        "arbitrators?[^.]{0,60}\\b(shall|will|to|is\\s+to)\\s+be\\s+appointed\\s+(solely\\s+)?by\\s+(the\\s+)?(company|employer|client|licensor|lessor|landlord|bank)",
+        "(company|employer|client|landlord|lessor)\\s+(shall|will|may)\\s+(solely\\s+)?appoint\\s+(the\\s+|a\\s+|sole\\s+)?arbitrator"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "arbitration",
+      "title": "Arbitrator appointed by one party",
+      "reason": "This clause appears to let one party appoint the arbitrator. A one-sided appointment mechanism may raise questions about the independence of the tribunal and should be checked against the appointment provision identified below. Potential issue; requires professional legal review.",
+      "recommendation": "Consider a neutral or mutually agreed appointment mechanism, with legal advice.",
+      "retrieval_query": "appointment of arbitrators",
+      "expected_section": {
+        "act_keyword": "arbitration",
+        "number": "11"
+      }
+    },
+    {
+      "id": "R011_foreign_governing_law_or_forum",
+      "applies_to": [
+        "jurisdiction"
+      ],
+      "match_any": [
+        "laws?\\s+of\\s+(england|singapore|new\\s+york|california|delaware|the\\s+united\\s+(states|kingdom)|uk|usa|u\\.s\\.|dubai|uae|hong\\s+kong|germany|australia|ireland|canada)\\b",
+        "courts?\\s+(of|in|at)\\s+(england|london|singapore|new\\s+york|california|delaware|dubai|hong\\s+kong)\\b"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "jurisdiction",
+      "title": "Foreign governing law or forum",
+      "reason": "This clause appears to select a non-Indian governing law or court. This may affect how the agreement is enforced and which rules apply. No matching provision was retrieved from the loaded statute corpus, so this finding is based on the clause wording alone. Requires review.",
+      "recommendation": "Confirm that the chosen law and forum are intended and acceptable to both parties.",
+      "retrieval_query": "",
+      "expected_section": null
+    },
+    {
+      "id": "R012_confidentiality_without_data_protection",
+      "applies_to": [
+        "confidentiality"
+      ],
+      "match_none": [
+        "personal\\s+data",
+        "data\\s+protection",
+        "\\bprivacy\\b",
+        "information\\s+technology\\s+act",
+        "\\bdpdp\\b",
+        "digital\\s+personal\\s+data"
+      ],
+      "doc_types": [
+        "employment",
+        "service",
+        "other"
+      ],
+      "risk_level": "low",
+      "category": "data_protection",
+      "title": "Confidentiality clause without a data-protection reference",
+      "reason": "This confidentiality clause does not mention personal data or data protection. If personal data is handled under this agreement, the parties may want to address data-protection obligations. Informational; requires review where personal data is involved.",
+      "recommendation": "Check whether personal data is handled and, if so, whether data-protection terms are needed.",
+      "retrieval_query": "sensitive personal data reasonable security practices compensation body corporate",
+      "expected_section": {
+        "act_keyword": "information technology",
+        "number": "43a"
+      }
+    },
+    {
+      "id": "R013_asymmetric_termination",
+      "applies_to": [
+        "termination"
+      ],
+      "match_any": [
+        "(company|employer|client|licensor|landlord|lessor)\\s+(may|shall\\s+be\\s+entitled\\s+to|reserves\\s+the\\s+right\\s+to)\\s+terminate[^.]{0,120}\\b(without|at\\s+any\\s+time)\\b[^.]{0,60}\\b(notice|cause|reason)\\b"
+      ],
+      "doc_types": null,
+      "risk_level": "medium",
+      "category": "termination",
+      "title": "One-sided termination right",
+      "reason": "This clause appears to allow one party to terminate without notice or cause. Asymmetric termination rights can create termination risk for the other party. No statute from the loaded corpus was matched to this finding, so it is based on the clause wording alone. Requires review.",
+      "recommendation": "Consider whether termination rights and notice periods should be mutual.",
+      "retrieval_query": "",
+      "expected_section": null
+    }
+  ],
+  "missing_clause_rules": [
+    {
+      "id": "M001_missing_termination",
+      "any_of": [
+        "termination"
+      ],
+      "doc_types": null,
+      "title": "No termination clause identified",
+      "reason": "No termination clause was identified. It may be missing or addressed elsewhere in the document. Requires review."
+    },
+    {
+      "id": "M002_missing_governing_law",
+      "any_of": [
+        "jurisdiction"
+      ],
+      "doc_types": null,
+      "title": "No governing law or jurisdiction clause identified",
+      "reason": "No governing law or jurisdiction clause was identified. It may be missing or addressed elsewhere in the document. Requires review."
+    },
+    {
+      "id": "M003_missing_dispute_resolution",
+      "any_of": [
+        "arbitration",
+        "jurisdiction"
+      ],
+      "doc_types": null,
+      "title": "No dispute resolution clause identified",
+      "reason": "No arbitration or dispute resolution clause was identified. It may be missing or addressed elsewhere in the document. Requires review."
+    },
+    {
+      "id": "M004_missing_confidentiality",
+      "any_of": [
+        "confidentiality"
+      ],
+      "doc_types": [
+        "employment",
+        "service",
+        "nda",
+        "other"
+      ],
+      "title": "No confidentiality clause identified",
+      "reason": "No confidentiality clause was identified. It may be missing or addressed elsewhere in the document. Requires review."
+    },
+    {
+      "id": "M005_missing_notice_period",
+      "any_of": [
+        "notice_period"
+      ],
+      "doc_types": [
+        "employment"
+      ],
+      "title": "No notice period identified",
+      "reason": "No notice period was identified. It may be missing or addressed elsewhere in the document. Requires review."
+    },
+    {
+      "id": "M006_missing_payment",
+      "any_of": [
+        "payment"
+      ],
+      "doc_types": [
+        "employment",
+        "service",
+        "lease",
+        "loan"
+      ],
+      "title": "No payment terms identified",
+      "reason": "No payment, salary or rent terms were identified. They may be missing or addressed elsewhere in the document. Requires review."
+    }
+  ]
+}

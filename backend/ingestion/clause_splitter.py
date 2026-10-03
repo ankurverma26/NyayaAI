@@ -2,10 +2,11 @@
 backend/ingestion/clause_splitter.py
 ────────────────────────────────────
 Splits a raw contract into individual clauses with:
-- clause_number (1-indexed integer)
+- clause_number (1-indexed sequence number, always an integer)
+- clause_label (the contract's own numbering, e.g. "7", "7.2", "ARTICLE III")
 - heading (extracted or inferred)
 - text (verbatim clause content)
-- clause_type (heuristic classification for risk engine and UI tagging)
+- clause_type (heuristic; the analysis layer assigns the final multi-label types)
 - page (page number from document pages if available)
 """
 from __future__ import annotations
@@ -93,7 +94,8 @@ CLAUSE_TYPE_PATTERNS: dict[str, list[re.Pattern]] = {
 
 
 def classify_clause_type(heading: Optional[str], text: str) -> str:
-    """Classify the clause based on heading and text keywords."""
+    """Quick single-label guess. Final multi-label classification lives in
+    backend/analysis/clause_classifier.py and is applied in ingestion/service.py."""
     combined = f"{heading or ''}\n{text}"
     for clause_type, patterns in CLAUSE_TYPE_PATTERNS.items():
         if any(p.search(combined) for p in patterns):
@@ -103,9 +105,6 @@ def classify_clause_type(heading: Optional[str], text: str) -> str:
 
 # ── Clause Boundary Regex ─────────────────────────────────────────────────────
 
-# Matches split points before:
-# "Clause 1.", "Clause 1:", "Section 2.", "Article III", "1. DEFINITIONS", etc.
-# Note: uses strictly non-capturing groups so re.split doesn't inject match tokens.
 CLAUSE_SPLIT_REGEX = re.compile(
     r"\n+(?="
     r"(?:Clause|CLAUSE|Section|SECTION|Article|ARTICLE)\s+(?:[0-9IVXLCDM]+|[A-Z])[\.:\s\-]"
@@ -121,10 +120,12 @@ HEADER_EXTRACTOR = re.compile(
     re.MULTILINE,
 )
 
+# Captures the contract's own numbering: "7", "7.2", "Clause 5", "ARTICLE III", "(a)"
 LABEL_EXTRACTOR = re.compile(
     r"^((?:Clause|CLAUSE|Section|SECTION|Article|ARTICLE)\s+(?:[0-9IVXLCDM]+|[A-Z])"
     r"|[0-9]{1,2}(?:\.[0-9]{1,2})*|\([0-9a-z]\))(?=[\.\:\s\-]|$)"
 )
+
 
 def _clean_text(text: str) -> str:
     """Normalize linebreaks and spaces."""
@@ -158,7 +159,6 @@ def split_into_clauses(doc: ParsedDocument) -> list[ExtractedClause]:
     clean_chunks = [c.strip() for c in chunks if c and c.strip()]
 
     if len(clean_chunks) < 2:
-        # Fallback: Split on double newlines
         clean_chunks = [
             p.strip() for p in re.split(r"\n\s*\n+", raw_text) if len(p.strip()) > 30
         ]
@@ -178,7 +178,6 @@ def split_into_clauses(doc: ParsedDocument) -> list[ExtractedClause]:
 
         if m:
             heading = m.group(1).strip()
-            # If body is non-empty, use body as the clause body, otherwise keep the full chunk
             clause_body = body if body else chunk
         elif idx == 1 and ("agreement" in first_line.lower() or "whereas" in chunk.lower()):
             heading = "Preamble & Recitals"
@@ -192,12 +191,11 @@ def split_into_clauses(doc: ParsedDocument) -> list[ExtractedClause]:
         else:
             clause_body = chunk
 
-        # Classification looks at both heading and full chunk
+        label_match = LABEL_EXTRACTOR.match(first_line)
+        clause_label = label_match.group(1) if label_match else None
+
         clause_type = classify_clause_type(heading, chunk)
         page = _estimate_page_for_clause(clause_body, doc)
-
-        lm = LABEL_EXTRACTOR.match(first_line)
-        clause_label = lm.group(1) if lm else None
 
         clauses.append(
             ExtractedClause(

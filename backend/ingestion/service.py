@@ -5,39 +5,47 @@ High-level ingestion service:
 1. Accepts uploaded file (bytes or path)
 2. Parses text and pages via DocumentParser
 3. Segments text into structured clauses via ClauseSplitter
-4. Persists Document, Contract, and Clause entities in SQLite
-5. Returns the persisted ORM objects
+4. Assigns multi-label clause types (backend/analysis/clause_classifier.py)
+5. Persists Document, Contract, and Clause entities
+6. Returns the persisted ORM objects
+
+Security: the raw upload is NOT written to disk (it is parsed from memory), so no
+contract files are left behind in data/uploads/. Only a SHA-256 hash is kept.
 """
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from pathlib import Path
 from typing import Optional, Union
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.config import get_settings
+from backend.analysis.clause_classifier import classify_clause
 from backend.database.models import Clause, Contract, Document
 from backend.ingestion.clause_splitter import split_into_clauses
 from backend.ingestion.document_parser import ParsedDocument, parse_document
 
 logger = logging.getLogger(__name__)
 
+# Order matters: most specific first. Word boundaries avoid false hits such as
+# "nda" inside "standard" or "rent" inside "parent"/"current".
+_DOC_TYPE_PATTERNS: list[tuple[str, re.Pattern]] = [
+    ("employment", re.compile(r"\b(employment|employee|offer\s+letter|appointment\s+letter)\b", re.I)),
+    ("nda", re.compile(r"\b(non[\s\-]?disclosure|nda)\b", re.I)),
+    ("lease", re.compile(r"\b(lease|rent|rental|tenancy|landlord|tenant)\b", re.I)),
+    ("loan", re.compile(r"\b(loan|credit\s+agreement|borrower|lender)\b", re.I)),
+    ("service", re.compile(r"\b(services?|consult\w*|vendor|msa|freelance\w*)\b", re.I)),
+]
+
 
 def _infer_doc_type(title: str, full_text: str) -> str:
-    """Heuristic doc_type detection from title & contract text."""
-    lower = f"{title} {full_text[:500]}".lower()
-    if "employment" in lower or "offer letter" in lower:
-        return "employment"
-    if "service" in lower or "master service" in lower or "msa" in lower:
-        return "service"
-    if "non-disclosure" in lower or "nda" in lower or "confidentiality" in lower:
-        return "nda"
-    if "lease" in lower or "rent" in lower or "tenancy" in lower:
-        return "lease"
-    if "loan" in lower or "credit agreement" in lower:
-        return "loan"
+    """Heuristic doc_type detection from title & start of the contract text."""
+    sample = f"{title} {full_text[:600]}"
+    for doc_type, pattern in _DOC_TYPE_PATTERNS:
+        if pattern.search(sample):
+            return doc_type
     return "other"
 
 
@@ -49,24 +57,7 @@ async def ingest_contract(
     jurisdiction: str = "india",
     user_id: Optional[int] = None,
 ) -> tuple[Document, Contract, list[Clause]]:
-    """
-    Ingest a contract file into the database.
-
-    Args:
-        session: Active SQLAlchemy AsyncSession
-        content: Raw bytes or local file path
-        filename: Original file name (e.g. "employment_agreement.pdf")
-        title: Human-readable contract title (defaults to cleaned filename)
-        jurisdiction: ISO / country identifier (defaults to "india")
-        user_id: Optional user owner
-
-    Returns:
-        tuple of (Document, Contract, list[Clause])
-    """
-    settings = get_settings()
-    settings.uploads_dir.mkdir(parents=True, exist_ok=True)
-
-    # Read raw bytes if content is bytes, else read from file
+    """Ingest a contract file into the database. Returns (Document, Contract, clauses)."""
     if isinstance(content, bytes):
         raw_bytes = content
     else:
@@ -74,26 +65,17 @@ async def ingest_contract(
         filename = filename or path.name
         raw_bytes = path.read_bytes()
 
-    # Save to disk with unique prefix to avoid filename collisions
-    safe_name = f"{uuid.uuid4().hex[:8]}_{Path(filename).name}"
-    saved_path = settings.uploads_dir / safe_name
-    saved_path.write_bytes(raw_bytes)
+    safe_name = Path(filename).name  # strip any directory components
 
-    # 1. Parse document
-    parsed: ParsedDocument = parse_document(raw_bytes, filename=filename)
-    logger.info(
-        "Parsed %s (%s, %d bytes, %d pages)",
-        filename,
-        parsed.file_type,
-        len(raw_bytes),
-        len(parsed.pages),
-    )
+    # 1. Parse document (in memory)
+    parsed: ParsedDocument = parse_document(raw_bytes, filename=safe_name)
+    logger.info("Parsed upload (%s, %d bytes, %d pages)", parsed.file_type, len(raw_bytes), len(parsed.pages))
 
-    # 2. Persist Document record
+    # 2. Persist Document record (file itself is not stored)
     doc_record = Document(
-        filename=filename,
+        filename=safe_name,
         file_type=parsed.file_type,
-        file_path=str(saved_path),
+        file_path=f"not_stored/{uuid.uuid4().hex[:8]}",
         file_hash=parsed.file_hash,
         user_id=user_id,
     )
@@ -101,9 +83,8 @@ async def ingest_contract(
     await session.flush()
 
     # 3. Create Contract record
-    contract_title = title or Path(filename).stem.replace("_", " ").title()
+    contract_title = title or Path(safe_name).stem.replace("_", " ").title()
     doc_type = _infer_doc_type(contract_title, parsed.full_text)
-
     contract_record = Contract(
         title=contract_title,
         doc_type=doc_type,
@@ -114,27 +95,28 @@ async def ingest_contract(
     session.add(contract_record)
     await session.flush()
 
-    # 4. Split into clauses
+    # 4. Split into clauses and classify (multi-label)
     extracted = split_into_clauses(parsed)
-    logger.info("Extracted %d clauses from '%s'", len(extracted), contract_title)
+    logger.info("Extracted %d clauses", len(extracted))
 
     clause_records: list[Clause] = []
     for ec in extracted:
+        types = classify_clause(ec.heading, ec.text)
         cl = Clause(
             contract_id=contract_record.id,
             clause_number=ec.clause_number,
+            clause_label=ec.clause_label,
             heading=ec.heading,
             text=ec.text,
-            clause_type=ec.clause_type,
+            clause_type=types[0],
+            clause_types=types,
             page=ec.page,
-            clause_label=ec.clause_label,
         )
         session.add(cl)
         clause_records.append(cl)
 
     await session.commit()
 
-    # Refresh to ensure all attributes and IDs are loaded
     await session.refresh(doc_record)
     await session.refresh(contract_record)
     for cl in clause_records:

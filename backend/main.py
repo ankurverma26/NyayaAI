@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.contracts import router as contracts_router
 from backend.api.statutes import router as statutes_router
+from backend.api.analysis import router as analysis_router
 from backend.config import get_settings
 from backend.database.init_db import init_db
 
@@ -94,4 +95,5 @@ async def health() -> dict:
 # ── Sub-routers ────────────────────────────────────────────────────────────────
 app.include_router(contracts_router)
 app.include_router(statutes_router)
+app.include_router(analysis_router)
 

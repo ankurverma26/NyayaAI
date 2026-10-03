@@ -138,6 +138,8 @@ class Clause(Base):
     text: Mapped[str] = mapped_column(Text, nullable=False)
     clause_type: Mapped[Optional[str]] = mapped_column(String(60), nullable=True)
     page: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    clause_label: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    clause_types: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
 
     contract: Mapped["Contract"] = relationship(back_populates="clauses")
     risk_findings: Mapped[list["RiskFinding"]] = relationship(
@@ -238,9 +240,18 @@ class RiskFinding(Base):
     __tablename__ = "risk_findings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    clause_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("clauses.id", ondelete="CASCADE"), nullable=False
+    contract_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("contracts.id", ondelete="CASCADE"), nullable=False
     )
+
+    clause_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("clauses.id", ondelete="CASCADE"), nullable=True
+    )
+    rule_id: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    title: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    evidence_status: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    matched_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
     risk_level: Mapped[str] = mapped_column(String(20), nullable=False, default="medium")
     category: Mapped[Optional[str]] = mapped_column(String(60), nullable=True)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
@@ -253,7 +264,7 @@ class RiskFinding(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    clause: Mapped["Clause"] = relationship(back_populates="risk_findings")
+    clause: Mapped[Optional["Clause"]] = relationship(back_populates="risk_findings")
     section: Mapped[Optional["Section"]] = relationship(back_populates="risk_findings")
     evidence: Mapped[list["Evidence"]] = relationship(
         back_populates="finding", cascade="all, delete-orphan"
@@ -284,6 +295,7 @@ class Evidence(Base):
     )
     quote: Mapped[str] = mapped_column(Text, nullable=False)
     support: Mapped[str] = mapped_column(String(20), nullable=False, default="supports")
+    verification_status: Mapped[str] = mapped_column(String(30), nullable=False, default="verified")
 
     finding: Mapped["RiskFinding"] = relationship(back_populates="evidence")
     source: Mapped["LegalSource"] = relationship(back_populates="evidence")

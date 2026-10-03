@@ -1,0 +1,18 @@
+NON-DISCLOSURE AGREEMENT
+
+This Non-Disclosure Agreement is made between Orbit Labs Private Limited ("Disclosing Party") and Vertex Consulting LLP ("Recipient").
+
+1. CONFIDENTIAL INFORMATION
+Confidential Information means all non-public business, technical and financial information disclosed by the Disclosing Party, including trade secrets and proprietary information.
+
+2. OBLIGATIONS OF THE RECIPIENT
+The Recipient shall not disclose Confidential Information to any third party and shall use it only for evaluating the proposed business relationship.
+
+3. NON-COMPETE
+The Recipient shall not, for two (2) years after termination of this Agreement, carry on any business that competes with the Disclosing Party.
+
+4. TERM
+This Agreement remains in force for three years from the date of signing. Either party may terminate this Agreement by giving thirty (30) days' written notice.
+
+5. GOVERNING LAW
+This Agreement shall be governed by the laws of England and Wales and the courts of London shall have exclusive jurisdiction.

@@ -1,0 +1,42 @@
+EMPLOYMENT AGREEMENT
+
+This Employment Agreement is made on 1 April 2026 between Bluepeak Technologies Private Limited, a company with its office at Bengaluru, Karnataka (the "Company"), and Mr. Rahul Mehta, residing at Noida, Uttar Pradesh (the "Employee").
+
+1. POSITION AND DUTIES
+The Employee is appointed as Software Engineer and shall report to the Engineering Manager. The Employee shall devote full working time to the Company and perform the duties assigned from time to time.
+
+2. REMUNERATION
+The Company shall pay the Employee a gross monthly salary of Rs. 90,000, payable on the last working day of each month, subject to applicable tax deductions.
+
+3. PROBATION AND NOTICE PERIOD
+The Employee shall be on probation for six months. After confirmation, either party may end the employment by giving ninety (90) days' written notice or salary in lieu of notice.
+
+4. TERMINATION
+The Company may terminate this Agreement at any time without notice or cause. The Employee may terminate this Agreement only by giving the notice stated in clause 3.
+
+5. CONFIDENTIALITY
+The Employee shall not disclose any Confidential Information, including trade secrets, source code and client lists, during or after the employment.
+
+6. INTELLECTUAL PROPERTY
+The Employee assigns to the Company all rights, title and interest in any inventions, software and works created in the course of employment.
+
+7. NON-COMPETE
+The Employee shall not, for a period of three (3) years after leaving the employment of the Company, directly or indirectly engage in, be employed by, or provide services to any business that competes with the Company anywhere in India.
+
+8. NON-SOLICITATION
+For two (2) years after termination of employment, the Employee shall not solicit any client or employee of the Company.
+
+9. TRAINING BOND AND LIQUIDATED DAMAGES
+If the Employee resigns within twenty-four (24) months of joining, the Employee shall pay the Company Rs. 5,00,000 as liquidated damages, whether or not the Company suffers any actual loss.
+
+10. INDEMNITY
+The Employee shall indemnify and hold harmless the Company against all losses, claims and expenses arising from any breach of this Agreement.
+
+11. ARBITRATION
+Any dispute arising out of this Agreement shall be referred to arbitration under the Arbitration and Conciliation Act, 1996 before a sole arbitrator to be appointed by the Company.
+
+12. GOVERNING LAW AND JURISDICTION
+This Agreement is governed by the laws of India. The courts at Bengaluru shall have exclusive jurisdiction.
+
+13. ENTIRE AGREEMENT
+This Agreement is the entire agreement between the parties and supersedes all prior understandings.
