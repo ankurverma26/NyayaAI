@@ -17,8 +17,8 @@ RULES: dict[str, dict[str, list[str]]] = {
         "body": [
             r"non[\s\-]?compet",
             r"restraint\s+of\s+trade",
-            r"shall\s+not\b[^.]{0,160}\b(compete|competing|competitor|competitive)\b",
-            r"shall\s+not\b[^.]{0,200}\b(engage|work|employed|associated|provide\s+services)\b[^.]{0,120}\b(competing|competitor|similar\s+business|same\s+business)\b",
+            r"shall\s+not\b[^.]{0,160}\bcompet\w*",
+            r"shall\s+not\b[^.]{0,200}\b(engage|work|employed|associated|provide\s+services)\b[^.]{0,120}\b(compet\w*|similar\s+business|same\s+business)\b",
         ],
     },
     "non_solicitation": {

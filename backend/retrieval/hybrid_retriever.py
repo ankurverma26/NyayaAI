@@ -1,6 +1,7 @@
 """Hybrid retriever: BM25 + dense embeddings + citation/section-number boost."""
 from __future__ import annotations
 
+import threading
 from collections import OrderedDict
 from dataclasses import asdict, dataclass, field
 
@@ -64,6 +65,7 @@ class HybridRetriever:
         self._bm25 = BM25Okapi([tokenize(r.search_text) for r in self.records]) if self.records else None
         self._cache: OrderedDict[tuple, list[SearchResult]] = OrderedDict()
         self._cache_size = cache_size
+        self._lock = threading.Lock()  # cache is shared by agent worker threads
 
     @property
     def dense_available(self) -> bool:
@@ -111,9 +113,10 @@ class HybridRetriever:
             return []
         a = self.alpha if alpha is None else alpha
         key = (query, k, mode, a)
-        if key in self._cache:
-            self._cache.move_to_end(key)
-            return self._cache[key]
+        with self._lock:
+            if key in self._cache:
+                self._cache.move_to_end(key)
+                return self._cache[key]
 
         q = expand_query(query)
         bm25_raw = self._bm25_raw(q)
@@ -171,7 +174,8 @@ class HybridRetriever:
             if len(results) >= k:
                 break
 
-        self._cache[key] = results
-        if len(self._cache) > self._cache_size:
-            self._cache.popitem(last=False)
+        with self._lock:
+            self._cache[key] = results
+            if len(self._cache) > self._cache_size:
+                self._cache.popitem(last=False)
         return results

@@ -221,6 +221,7 @@ async def test_risk_finding_and_evidence(session: AsyncSession):
     await session.flush()
 
     finding = RiskFinding(
+        contract_id=contract.id,
         clause_id=clause.id,
         risk_level="high",
         category="non_compete",

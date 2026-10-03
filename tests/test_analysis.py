@@ -62,6 +62,10 @@ def test_classifier_non_compete_and_multi_label():
     assert "termination" in labels and "notice_period" in labels
 
 
+def test_classifier_detects_non_compete_without_heading():
+    assert classify_clause(None, NON_COMPETE_POST)[0] == "non_compete"
+
+
 def test_classifier_no_false_hit_on_common_words():
     labels = classify_clause("Miscellaneous", "In consideration of the mutual promises, the parties agree that headings are for convenience.")
     assert labels == ["other"]
