@@ -44,3 +44,18 @@ desktop.ini
 .cache/
 
 tree.txt
+
+# Retrieval index (rebuilt automatically from the database)
+data/index/
+*.npy
+
+# Uploaded contracts (sensitive; never commit)
+data/uploads/
+
+# Other local databases
+*.sqlite
+*.sqlite3
+
+# Local env variants (keep .env.example tracked)
+.env.*
+!.env.example
