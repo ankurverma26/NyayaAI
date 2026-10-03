@@ -16,9 +16,9 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.contracts import router as contracts_router
+from backend.api.contracts import router as contracts_router, documents_router
 from backend.api.statutes import router as statutes_router
-from backend.api.analysis import router as analysis_router
+from backend.api.legal import router as legal_router, trace_router
 from backend.config import get_settings
 from backend.database.init_db import init_db
 
@@ -95,5 +95,6 @@ async def health() -> dict:
 # ── Sub-routers ────────────────────────────────────────────────────────────────
 app.include_router(contracts_router)
 app.include_router(statutes_router)
-app.include_router(analysis_router)
-
+app.include_router(documents_router)
+app.include_router(legal_router)
+app.include_router(trace_router)

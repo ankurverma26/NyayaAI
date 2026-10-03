@@ -318,6 +318,7 @@ class AgentRun(Base):
     contract_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("contracts.id", ondelete="SET NULL"), nullable=True
     )
+    run_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)
     user_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
