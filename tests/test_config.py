@@ -9,9 +9,10 @@ from pathlib import Path
 from backend.config import Settings, get_settings
 
 
-def test_settings_defaults() -> None:
+def test_settings_defaults(monkeypatch) -> None:
     """All defaults should be sensible without a .env file."""
-    s = Settings()
+    monkeypatch.delenv("USE_LLM", raising=False)
+    s = Settings(_env_file=None)
     assert s.use_llm is False
     assert s.ollama_model == "qwen2.5:3b"
     assert "sqlite" in s.db_url

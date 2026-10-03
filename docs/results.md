@@ -35,9 +35,9 @@ The only miss is "liquidated damages and penalty for breach": dense and hybrid r
 
 | Metric | BM25 | Dense | Hybrid |
 |---|---|---|---|
-| Hit@1 | _ /12 | _ /12 | _ /12 |
-| Hit@3 | _ /12 | _ /12 | _ /12 |
-| MRR | _ | _ | _ |
+| Hit@1 | 7/12 | 9/12 | 9/12 |
+| Hit@3 | 8/12 | 11/12 | 12/12 |
+| MRR | 0.67 | 0.84 | 0.85 |
 
 Report whatever the numbers show. If hybrid or dense wins here, that is the evidence for the hybrid design. If BM25 still wins, say so and explain that the corpus is small and the benefit is expected to grow with corpus size and paraphrased queries.
 

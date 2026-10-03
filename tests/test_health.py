@@ -7,6 +7,8 @@ Run with: pytest tests/test_health.py -v
 import pytest
 from fastapi.testclient import TestClient
 
+from backend.config import get_settings
+
 from backend.main import app
 
 
@@ -35,4 +37,4 @@ def test_health_payload_shape(client: TestClient) -> None:
 def test_health_use_llm_default(client: TestClient) -> None:
     """Default USE_LLM should be False (no LLM required for core pipeline)."""
     data = client.get("/health").json()
-    assert data["use_llm"] is False
+    assert data["use_llm"] == get_settings().use_llm

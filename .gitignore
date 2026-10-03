@@ -39,23 +39,22 @@ desktop.ini
 .idea/
 *.swp
 
-# Hugging Face model cache (large binary files)
-# These are downloaded at runtime, not committed
+# HuggingFace model cache
 .cache/
 
-tree.txt
 
-# Retrieval index (rebuilt automatically from the database)
+# Retrieval index (rebuilt from DB)
 data/index/
 *.npy
 
-# Uploaded contracts (sensitive; never commit)
+# Uploaded contracts (sensitive)
 data/uploads/
 
-# Other local databases
+# Other databases
 *.sqlite
 *.sqlite3
 
-# Local env variants (keep .env.example tracked)
+# Env variants
 .env.*
 !.env.example
+

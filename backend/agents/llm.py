@@ -66,10 +66,20 @@ class OllamaClient(LLMClient):
 
 
 def get_llm_client(use_llm: bool | None = None) -> LLMClient:
+    """NoLLM unless USE_LLM is on. Model and server URL come from the .env settings when available."""
+    settings = None
+    try:
+        from backend.config import get_settings
+        settings = get_settings()
+    except Exception:
+        pass
     if use_llm is None:
-        try:
-            from backend.config import get_settings
-            use_llm = bool(get_settings().use_llm)
-        except Exception:
-            use_llm = os.getenv("USE_LLM", "false").lower() == "true"
-    return OllamaClient() if use_llm else NoLLM()
+        use_llm = bool(getattr(settings, "use_llm", False)) if settings is not None \
+            else os.getenv("USE_LLM", "false").lower() == "true"
+    if not use_llm:
+        return NoLLM()
+    # pydantic-settings reads .env but does not export it to os.environ, so pass the values explicitly
+    return OllamaClient(
+        model=getattr(settings, "ollama_model", None),
+        base_url=getattr(settings, "ollama_base_url", None),
+    )
