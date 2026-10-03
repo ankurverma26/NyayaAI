@@ -13,6 +13,9 @@ import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+import asyncio
+from backend.retrieval import factory
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,6 +42,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("NyayaAI backend starting up …")
     logger.info("USE_LLM=%s | EMBED_MODEL=%s", settings.use_llm, settings.embed_model)
     await init_db()
+    try:
+        await asyncio.to_thread(factory.get_retriever)  # load the search index before the first request
+    except Exception:
+        logger.exception("Retriever warm-up failed; it will retry on the first request")
     yield
     logger.info("NyayaAI backend shutting down.")
 
