@@ -157,6 +157,40 @@ def test_chunking_overlaps_long_text():
     assert len(chunks) >= 3 and all(len(c.split()) <= 180 for c in chunks)
 
 
+# ── thread safety ──────────────────────────────────────────────────────────────
+def test_default_embedder_is_a_single_instance_across_threads():
+    from concurrent.futures import ThreadPoolExecutor
+
+    from backend.retrieval.index_builder import get_default_embedder
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        ids = {id(e) for e in pool.map(lambda _: get_default_embedder(), range(16))}
+    assert len(ids) == 1
+
+
+def test_get_retriever_builds_only_once_under_concurrent_requests():
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    from backend.retrieval import factory
+    calls = []
+    original = factory.build_retriever
+
+    def slow_build(*a, **k):
+        calls.append(1)
+        time.sleep(0.2)
+        return HybridRetriever(FIXTURE)
+
+    factory.build_retriever = slow_build
+    factory.reset_retriever()
+    try:
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            got = list(pool.map(lambda _: factory.get_retriever(), range(6)))
+    finally:
+        factory.build_retriever = original
+        factory.reset_retriever()
+    assert len(calls) == 1 and len({id(r) for r in got}) == 1
+
+
 # ── integration (real corpus + real model; auto-skipped if unavailable) ────────
 ROOT = Path(__file__).resolve().parent.parent
 _HAVE_ST = importlib.util.find_spec("sentence_transformers") is not None

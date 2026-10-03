@@ -1,15 +1,8 @@
-/* Tailwind v4 entry — import the full Tailwind base */
 @import "tailwindcss";
 
-/* ── Global design tokens ─────────────────────────────────────────────────── */
-:root {
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
-}
-
-/* ── Base resets ──────────────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
+@theme {
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", serif;
 }
 
 html, body, #root {
@@ -25,3 +18,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* slim dark scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #334155 transparent; }

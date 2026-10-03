@@ -1,77 +1,49 @@
-/**
- * App.tsx — NyayaAI shell (scaffold placeholder)
- *
- * This file will be replaced with the full UI in a future task.
- * For now it just confirms the stack (Vite + React + Tailwind + Axios) is wired up
- * and can reach the backend /health endpoint.
- */
-import axios from 'axios'
-import { Scale } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Analysis from './components/Analysis'
+import Dashboard from './components/Dashboard'
+import LegalChanges from './components/LegalChanges'
+import QAChat from './components/QAChat'
+import { DISCLAIMER, Icon } from './components/ui'
 
-interface HealthResponse {
-  status: string
-  service: string
-  version: string
-  use_llm: boolean
-  embed_model: string
-}
+type View = 'dashboard' | 'analysis' | 'qa' | 'changes'
 
 export default function App() {
-  const [health, setHealth] = useState<HealthResponse | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<View>('dashboard')
+  const [contractId, setContractId] = useState<number | null>(null)
 
-  useEffect(() => {
-    axios
-      .get<HealthResponse>('/health')
-      .then((res) => setHealth(res.data))
-      .catch(() => setError('Backend unreachable — start uvicorn first.'))
-  }, [])
+  const open = (id: number) => { setContractId(id); setView('analysis') }
+  const nav: [View, string, string][] = [
+    ['dashboard', 'Dashboard', 'file'],
+    ['qa', 'Legal Q&A', 'chat'],
+    ['changes', 'Legal Changes', 'bell'],
+  ]
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-[#0f1117] text-slate-200 p-8">
-      {/* Logo row */}
-      <div className="flex items-center gap-3">
-        <Scale size={40} className="text-violet-400" />
-        <h1 className="text-4xl font-bold tracking-tight">
-          Nyaya<span className="text-violet-400">AI</span>
-        </h1>
-      </div>
+    <div className="flex h-full flex-col">
+      <header className="flex items-center gap-6 border-b border-white/10 bg-[#0b0d13] px-6 py-3">
+        <button onClick={() => setView('dashboard')} className="flex items-center gap-2">
+          <Icon name="scale" className="h-6 w-6 text-amber-300" />
+          <span className="font-serif text-2xl tracking-wide text-white">NyayaAI</span>
+        </button>
+        <nav className="flex gap-1">
+          {nav.map(([v, label, icon]) => (
+            <button key={v} onClick={() => setView(v)}
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm ${view === v || (v === 'dashboard' && view === 'analysis') ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-200'}`}>
+              <Icon name={icon} /> {label}
+            </button>
+          ))}
+        </nav>
+        <span className="ml-auto hidden text-xs text-slate-500 md:block">Indian Legal Reasoning &amp; Contract Intelligence</span>
+      </header>
 
-      <p className="text-slate-400 text-lg text-center max-w-md">
-        Indian Legal Reasoning &amp; Contract Intelligence Platform
-      </p>
+      <main className="min-h-0 flex-1 overflow-y-auto">
+        {view === 'dashboard' && <Dashboard onOpen={open} />}
+        {view === 'analysis' && contractId !== null && <Analysis contractId={contractId} onBack={() => setView('dashboard')} />}
+        {view === 'qa' && <QAChat key={contractId ?? 'general'} defaultContractId={contractId} />}
+        {view === 'changes' && <LegalChanges onOpenContract={open} />}
+      </main>
 
-      {/* Backend status */}
-      <div className="mt-4 rounded-xl border border-slate-700 bg-slate-800/60 px-6 py-4 w-full max-w-sm text-sm font-mono">
-        <p className="text-slate-400 mb-2">Backend /health</p>
-        {error && <p className="text-red-400">{error}</p>}
-        {health && (
-          <ul className="space-y-1 text-slate-300">
-            <li>
-              <span className="text-slate-500">status: </span>
-              <span className="text-green-400">{health.status}</span>
-            </li>
-            <li>
-              <span className="text-slate-500">version: </span>
-              {health.version}
-            </li>
-            <li>
-              <span className="text-slate-500">use_llm: </span>
-              {String(health.use_llm)}
-            </li>
-            <li>
-              <span className="text-slate-500">embed_model: </span>
-              {health.embed_model}
-            </li>
-          </ul>
-        )}
-        {!health && !error && (
-          <p className="text-slate-500 animate-pulse">Connecting …</p>
-        )}
-      </div>
-
-      <p className="text-xs text-slate-600">Scaffold · Task 1 of N</p>
+      <footer className="border-t border-white/10 bg-[#0b0d13] px-6 py-2 text-center text-[11px] text-slate-500">{DISCLAIMER}</footer>
     </div>
   )
 }

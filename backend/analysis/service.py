@@ -24,8 +24,20 @@ from backend.database.models import (
 )
 
 
+_LOCKS: dict[int, asyncio.Lock] = {}
+
+
 async def analyze_contract(session: AsyncSession, contract_id: int, retriever: Any = None) -> dict[str, Any]:
-    """Run the risk engine on a stored contract and save findings + evidence."""
+    """Run the risk engine on a stored contract and save findings + evidence.
+
+    Calls for the same contract are serialised, so two simultaneous requests
+    (e.g. a double click) cannot write duplicate findings."""
+    lock = _LOCKS.setdefault(contract_id, asyncio.Lock())
+    async with lock:
+        return await _analyze_contract_unlocked(session, contract_id, retriever)
+
+
+async def _analyze_contract_unlocked(session: AsyncSession, contract_id: int, retriever: Any = None) -> dict[str, Any]:
     contract = (await session.execute(
         select(Contract).where(Contract.id == contract_id).options(selectinload(Contract.clauses))
     )).scalar_one_or_none()

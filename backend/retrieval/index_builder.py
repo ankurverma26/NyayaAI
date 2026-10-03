@@ -14,6 +14,7 @@ import hashlib
 import json
 import logging
 import os
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
@@ -21,6 +22,7 @@ from typing import Protocol
 import numpy as np
 
 logger = logging.getLogger(__name__)
+_load_lock = threading.Lock()  # model loading must never run in two threads at once
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INDEX_DIR = PROJECT_ROOT / "data" / "index"
@@ -150,10 +152,12 @@ class SentenceTransformerEmbedder:
 
     def _load(self):
         if self._model is None:
-            from sentence_transformers import SentenceTransformer  # lazy import
+            with _load_lock:
+                if self._model is None:  # re-check after acquiring the lock
+                    from sentence_transformers import SentenceTransformer  # lazy import
 
-            logger.info("Loading embedding model %s", self.name)
-            self._model = SentenceTransformer(self.name, device="cpu")
+                    logger.info("Loading embedding model %s", self.name)
+                    self._model = SentenceTransformer(self.name, device="cpu")
         return self._model
 
     def encode(self, texts: list[str], batch_size: int = 32) -> np.ndarray:
@@ -176,7 +180,9 @@ def get_default_embedder() -> SentenceTransformerEmbedder:
     """Process-wide singleton so the model is loaded at most once."""
     global _default_embedder
     if _default_embedder is None:
-        _default_embedder = SentenceTransformerEmbedder()
+        with _load_lock:
+            if _default_embedder is None:
+                _default_embedder = SentenceTransformerEmbedder()
     return _default_embedder
 
 
