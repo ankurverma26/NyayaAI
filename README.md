@@ -187,7 +187,7 @@ The corpus covers the Indian Contract Act 1872, the Arbitration and Conciliation
 | Arbitration and Conciliation Act, 1996 | ACA1996 | s.7, s.8, s.11 | in_force | 2026-10-03 |
 | Companies Act, 2013 | CA2013 | s.166 | in_force | 2026-10-03 |
 | Indian Contract Act, 1872 | ICA1872 | s.10, s.14, s.23, s.27, s.28, s.56, s.73, s.74, s.124 | in_force | 2026-10-03 |
-| Information Technology Act, 2000 | ITA2000 | s.43A, s.72A | in_force | 2026-10-03 |
+| Information Technology Act, 2000 | ITA2000 | s.43A, s.72A | verify_current_status | 2026-10-03 |
 | Specific Relief Act, 1963 | SRA1963 | s.14, s.16, s.41 | in_force | 2026-10-03 |
 
 Total: 5 Acts, 18 sections. The status comes from each JSON file; regenerate this table with `python scripts/list_corpus.py` after editing the files.
