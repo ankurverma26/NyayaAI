@@ -15,7 +15,9 @@ Measured on the project machine (Windows, Python 3.11, CPU only). Statute corpus
 
 ## 2. Retrieval comparison (BM25 vs dense vs hybrid)
 
-Twelve hand-labelled queries that reuse statute vocabulary. Each query has one expected section.
+Two hand-labelled sets of 12 queries each, run on the 18-section corpus. Each query has one expected section. The hybrid weight (alpha = 0.5) was fixed in advance and not tuned on these queries.
+
+**Formal queries** (reuse statute vocabulary, for example "restraint of trade after employment")
 
 | Metric | BM25 | Dense | Hybrid |
 |---|---|---|---|
@@ -23,15 +25,7 @@ Twelve hand-labelled queries that reuse statute vocabulary. Each query has one e
 | Hit@3 | 12/12 | 12/12 | 12/12 |
 | MRR | 1.00 | 0.96 | 0.96 |
 
-The only miss is "liquidated damages and penalty for breach": dense and hybrid rank Section 73 first and the expected Section 74 second.
-
-**How to read this honestly**
-
-- On this small corpus (18 sections) with queries that share vocabulary with the statutes, keyword search is already at its ceiling. **Hybrid did not outperform BM25 here.** The benchmark cannot show a benefit of dense retrieval.
-- Both sets of queries are small and hand-labelled, so this is a sanity check, not a rigorous evaluation.
-- Dense retrieval is expected to matter for plain-language questions that share few words with the statute. `scripts/compare_retrievers.py` now includes a separate **plain-language set** for this.
-
-### Plain-language query set (fill in after running `python scripts/compare_retrievers.py`)
+**Plain-language queries** (little shared vocabulary, for example "Can my employer stop me from joining a competitor after I quit?")
 
 | Metric | BM25 | Dense | Hybrid |
 |---|---|---|---|
@@ -39,7 +33,29 @@ The only miss is "liquidated damages and penalty for breach": dense and hybrid r
 | Hit@3 | 8/12 | 11/12 | 12/12 |
 | MRR | 0.67 | 0.84 | 0.85 |
 
-Report whatever the numbers show. If hybrid or dense wins here, that is the evidence for the hybrid design. If BM25 still wins, say so and explain that the corpus is small and the benefit is expected to grow with corpus size and paraphrased queries.
+**All 24 queries together**
+
+| Metric | BM25 | Dense | Hybrid |
+|---|---|---|---|
+| Hit@1 | 19/24 | 20/24 | 20/24 |
+| Hit@3 | 20/24 | 23/24 | 24/24 |
+| MRR | 0.84 | 0.90 | 0.90 |
+| Worst rank of the expected section | not found / 6 | 4 | 3 |
+
+**What the results show**
+
+- On queries that reuse statute wording, keyword search (BM25) is best. Dense and hybrid each missed one first place: "liquidated damages and penalty for breach" ranked Section 73 above the expected Section 74.
+- On plain-language questions BM25 falls to 7/12 first places, and for one query it did not find the expected section at all. Hybrid had the expected section in the top 3 for all 12.
+- The methods fail on different queries, which is why combining them helps. "If I promise to cover someone's losses, what is that called?": BM25 rank 1, dense rank 4, hybrid rank 1. "The other party broke the contract and I lost money": BM25 rank 6, hybrid rank 1.
+- Hybrid is not always best. For "Can my employer stop me from joining a competitor after I quit?" dense ranked the expected section first and hybrid third, because the keyword scores pulled it down.
+- Overall, hybrid is the most robust choice: its worst rank was 3, while BM25 and dense each had queries where they ranked the expected section lower or missed it.
+
+**Caveats to state**
+
+- Small and hand-labelled by the team: 24 queries, one expected section each (other sections may also be relevant). Differences of two or three queries are not statistically meaningful.
+- The plain-language set was added **after** the formal set showed that statute-style queries could not separate the methods. Say this openly.
+- The corpus has only 18 sections. Results may change with a larger corpus.
+- Alpha was not tuned. Tuning it on a separate validation set is future work.
 
 ## 3. Memory and latency
 

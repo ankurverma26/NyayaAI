@@ -30,7 +30,7 @@ Research trace, one question, "Source verification required." example, legal cha
 
 ## 8. Results
 - 114 automated tests passing.
-- Retrieval comparison table (12 queries), stated honestly: BM25 12/12, dense 11/12, hybrid 11/12 on statute-style queries. Add the plain-language table once you have run it.
+- Retrieval comparison, stated honestly: statute-style queries BM25 12/12 first places vs 11/12 for dense and hybrid; plain-language questions Hit@3 BM25 8/12, dense 11/12, hybrid 12/12. Show the two examples where one method fails and hybrid recovers.
 - Peak backend memory 453 MB (about 6% of 8 GB), measured on a larger machine.
 - Rules fire as designed on 3 sample contracts.
 

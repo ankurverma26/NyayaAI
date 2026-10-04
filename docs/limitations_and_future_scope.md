@@ -16,7 +16,7 @@
 - The Legal Change feature uses manually entered (mock) changes, and its link between clauses and sections comes only from the rule mappings.
 
 **Retrieval and AI**
-- On our small benchmark, hybrid search did not beat BM25 (see `results.md`). The benchmark is small and hand-labelled.
+- The retrieval benchmark is small (24 hand-labelled queries over 18 sections): BM25 won on statute-style queries and hybrid on plain-language ones. The weight between the two (alpha 0.5) was not tuned.
 - The optional local LLM (Ollama) path was tested with a fake LLM but not end to end on a real model, and its memory use was not measured.
 - English only.
 
