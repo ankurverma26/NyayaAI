@@ -166,3 +166,34 @@ export interface StatuteSummary {
   title: string
   short_name: string | null
 }
+
+export interface FlaggedSection {
+  section_number: string
+  status: string
+  score: number
+  missing_examples?: string[]
+}
+
+export interface SourceStatus {
+  source_id: number
+  title: string
+  short_name: string | null
+  url: string | null
+  law_status: string
+  last_checked: string | null
+  outcome: string
+  counts: Record<string, number>
+  changed_since_last: boolean
+  error: string | null
+  flagged: FlaggedSection[]
+}
+
+export interface CheckAlert {
+  change_id: number
+  title: string
+  impacted_clauses: ImpactedClause[]
+}
+
+export interface CheckResponse {
+  alerts: CheckAlert[]
+}

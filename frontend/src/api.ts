@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type {
   AskRequest, AskResponse, ChangeImpact, ContractDetail, ContractSummary, EvidenceListResponse,
-  FindingTrace, IngestionResponse, IssuesResponse, LegalChange, StatuteSummary,
+  FindingTrace, IngestionResponse, IssuesResponse, LegalChange, StatuteSummary, SourceStatus, CheckResponse,
 } from './types'
 
 // Dev: Vite proxies /api to the FastAPI backend. Override with VITE_API_URL if needed.
@@ -43,3 +43,7 @@ export const listChanges = () => http.get<LegalChange[]>('/api/legal/changes').t
 export const createChange = (body: { title: string; description?: string; citation: string }) =>
   http.post<ChangeImpact>('/api/legal/changes', body).then(r => r.data)
 export const listStatutes = () => http.get<StatuteSummary[]>('/api/statutes').then(r => r.data)
+
+export const getSyncStatus = () => http.get<SourceStatus[]>('/api/legal/sync/status').then(r => r.data)
+export const runSourceCheck = (force = false) =>
+  http.post<CheckResponse>('/api/legal/sync/check', { force, create_alerts: true }).then(r => r.data)
