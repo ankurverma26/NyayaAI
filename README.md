@@ -226,10 +226,6 @@ See `docs/results.md`. In short: 114 tests pass; peak backend memory 453 MB meas
 
 Small statute corpus; statute text only (no case law yet); rule-based risk engine checked on sample contracts we wrote, not validated on independent contracts; no version history of laws; no login. Details in `docs/limitations_and_future_scope.md`.
 
-## Use of AI tools
-
-[Write this section yourselves, truthfully, as your college requires: which AI tools you used (for example coding assistants or chat tools), what you used them for, and what you wrote, reviewed and tested yourselves.]
-
 ## Disclaimer
 
 NyayaAI provides legal information and document analysis for research and educational purposes. It is not a substitute for advice from a qualified legal professional. It uses cautious wording ("potential issue", "requires review") and does not declare contracts legal or illegal.
