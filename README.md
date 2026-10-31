@@ -19,7 +19,8 @@ NyayaAI reads a contract (PDF, DOCX or TXT), splits it into clauses, and checks 
 | LangGraph research agent: router, planner, retriever, evidence verifier, reasoner, with a visible trace | Done |
 | "Why this finding?" evidence chain for each finding | Done |
 | Legal Q&A with citations | Done |
-| Legal change alerts (a change to a section flags the clauses linked to it) | Done (changes are entered manually) |
+| Legal change alerts (a change to a section flags the clauses linked to it) | Done (changes can be entered manually or raised by the live check) |
+| Live check of the stored statutes against the official Acts on India Code | Done (on demand; needs internet) |
 | Optional local LLM (Ollama) for wording of answers | Done, optional |
 | Judicial hierarchy, law versioning, contract comparison | Planned (see `docs/limitations_and_future_scope.md`) |
 
@@ -55,7 +56,7 @@ Statute text comes only from the database (loaded from `data/laws/*.json`). The 
 
 1. **Get the code**
    ```powershell
-   git clone https://github.com/ankurverma26/NyayaAI
+   git clone <repo-url> NyayaAI
    cd NyayaAI
    ```
 2. **Create and activate a virtual environment with Python 3.11**
@@ -109,6 +110,16 @@ Statute text comes only from the database (loaded from `data/laws/*.json`). The 
 2. Open the flagged non-compete clause and click **Why this finding?**
 3. Ask a question in **Legal Q&A**, for example "Is a 3-year non-compete after resignation valid?"
 4. In **Legal Changes**, add a change for the section shown in the hint and see which clauses are affected.
+
+## Live check of the law data
+
+The statute text is stored locally (so the system works offline), and it can be **checked against the official Act on India Code on demand**:
+
+1. In each `data/laws/*.json` file, set `"url"` to the Act's **PDF** link on indiacode.nic.in, then run `python scripts/load_laws.py`.
+2. Click **Check now** on the *Legal Changes* page, or run `python scripts/sync_laws.py`.
+3. The result for every Act is: matches the official text, needs review, or official source unreachable. If a stored section was removed, reworded or marked omitted or repealed, a *Legal Change* alert is raised and the clauses linked to that section are listed.
+
+The check never overwrites the stored text; a person reviews the difference and updates the JSON file. It detects removed, changed or omitted text; text that was only added to a section is noticed through the document-level "changed since last check" flag. India Code has no official API, so the check downloads the Act's PDF (cached for 6 hours).
 
 ## Optional: local LLM with Ollama
 
@@ -187,7 +198,7 @@ The corpus covers the Indian Contract Act 1872, the Arbitration and Conciliation
 | Arbitration and Conciliation Act, 1996 | ACA1996 | s.7, s.8, s.11 | in_force | 2026-10-03 |
 | Companies Act, 2013 | CA2013 | s.166 | in_force | 2026-10-03 |
 | Indian Contract Act, 1872 | ICA1872 | s.10, s.14, s.23, s.27, s.28, s.56, s.73, s.74, s.124 | in_force | 2026-10-03 |
-| Information Technology Act, 2000 | ITA2000 | s.43A, s.72A | verify_current_status | 2026-10-03 |
+| Information Technology Act, 2000 | ITA2000 | s.43A, s.72A | in_force | 2026-10-03 |
 | Specific Relief Act, 1963 | SRA1963 | s.14, s.16, s.41 | in_force | 2026-10-03 |
 
 Total: 5 Acts, 18 sections. The status comes from each JSON file; regenerate this table with `python scripts/list_corpus.py` after editing the files.
@@ -214,6 +225,10 @@ See `docs/results.md`. In short: 114 tests pass; peak backend memory 453 MB meas
 ## Limitations
 
 Small statute corpus; statute text only (no case law yet); rule-based risk engine checked on sample contracts we wrote, not validated on independent contracts; no version history of laws; no login. Details in `docs/limitations_and_future_scope.md`.
+
+## Use of AI tools
+
+[Write this section yourselves, truthfully, as your college requires: which AI tools you used (for example coding assistants or chat tools), what you used them for, and what you wrote, reviewed and tested yourselves.]
 
 ## Disclaimer
 
