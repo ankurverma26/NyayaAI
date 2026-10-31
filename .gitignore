@@ -50,6 +50,9 @@ data/index/
 # Uploaded contracts (sensitive)
 data/uploads/
 
+# PDF download cache (live source check)
+data/cache/
+
 # Other databases
 *.sqlite
 *.sqlite3
@@ -57,4 +60,8 @@ data/uploads/
 # Env variants
 .env.*
 !.env.example
+# Assistant / agent settings
+AGENTS.md
+.agents/
 
+tempCodeRunnerFile.*

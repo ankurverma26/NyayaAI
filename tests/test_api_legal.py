@@ -37,7 +37,7 @@ def client(tmp_path, monkeypatch):
                 by_act.setdefault((r.act_title, r.short_name), []).append(r)
             for (title, short), recs in by_act.items():
                 src = LegalSource(title=title, short_name=short, source_type="act", jurisdiction="india",
-                                  status="in_force", retrieved_on="2026-10-03")
+                                  status="in_force", retrieved_on="2026-10-03", url="https://example.test/act.pdf")
                 s.add(src)
                 await s.flush()
                 for r in recs:

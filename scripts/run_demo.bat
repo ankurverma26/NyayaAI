@@ -19,7 +19,7 @@ echo [3/4] Building / checking the search index...
 python scripts\search_cli.py --stats
 
 echo [4/4] Starting backend (port 8000) and frontend (port 5173)...
-start "NyayaAI backend" cmd /k "call .venv\Scripts\activate.bat && uvicorn backend.main:app --port 8000"
+start "NyayaAI backend" cmd /k "call .\.venv\Scripts\activate.bat && python -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000"
 start "NyayaAI frontend" cmd /k "cd frontend && npm run dev"
 timeout /t 10 >nul
 start http://localhost:5173

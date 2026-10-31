@@ -57,6 +57,7 @@ from backend.database.models import (
     LegalSource,
     RiskFinding,
     Section,
+    SourceCheck,
 )
 from backend.database.session import get_session
 from backend.retrieval import factory
@@ -290,7 +291,18 @@ async def finding_trace(finding_id: int, session: AsyncSession = Depends(get_ses
                           "detail": {"quote": e.quote, "support": e.support, "verification": e.verification_status}})
             note = ("Law status must be confirmed on India Code." if src and src.status == "verify_current_status"
                     else "Version history is not tracked in this release; the status shown is as loaded.")
-            steps.append({"stage": "Temporal check", "title": f"Status: {src.status if src else 'unknown'}", "detail": {"note": note}})
+            detail: dict[str, Any] = {"note": note}
+            if src is not None:
+                last = (await session.execute(
+                    select(SourceCheck).where(SourceCheck.source_id == src.id).order_by(SourceCheck.id.desc()).limit(1)
+                )).scalar_one_or_none()
+                if last is not None:
+                    sec_res = ((last.details or {}).get("sections") or {}).get(sec.section_number if sec else "", {})
+                    detail["last_live_check"] = f"{last.checked_at:%Y-%m-%d}: {last.outcome}"
+                    detail["this_section"] = sec_res.get("status", "not checked")
+                else:
+                    detail["last_live_check"] = "never checked against the official source"
+            steps.append({"stage": "Temporal check", "title": f"Status: {src.status if src else 'unknown'}", "detail": detail})
     else:
         steps.append({"stage": "Evidence", "title": "Source verification required.",
                       "detail": {"evidence_status": f.evidence_status}})

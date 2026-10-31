@@ -25,6 +25,8 @@ from backend.api.legal import router as legal_router, trace_router
 from backend.config import get_settings
 from backend.database.init_db import init_db
 
+from backend.api.sync import router as sync_router
+
 # ── Logging ────────────────────────────────────────────────────────────────────
 settings = get_settings()
 
@@ -105,3 +107,4 @@ app.include_router(statutes_router)
 app.include_router(documents_router)
 app.include_router(legal_router)
 app.include_router(trace_router)
+app.include_router(sync_router)

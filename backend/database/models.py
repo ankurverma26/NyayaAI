@@ -393,3 +393,19 @@ class ClauseSectionLink(Base):
 
     clause: Mapped["Clause"] = relationship(back_populates="section_links")
     section: Mapped["Section"] = relationship(back_populates="clause_links")
+
+
+class SourceCheck(Base):
+    """Result of checking a stored Act against the official source (India Code)."""
+    __tablename__ = "source_checks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    source_id: Mapped[int] = mapped_column(Integer, ForeignKey("legal_sources.id", ondelete="CASCADE"), nullable=False)
+    checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    url: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
+    outcome: Mapped[str] = mapped_column(String(30), nullable=False)
+    http_status: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    fingerprint: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    changed_since_last: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    counts: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    details: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
