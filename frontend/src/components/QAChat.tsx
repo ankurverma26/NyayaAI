@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { askLegal, errMsg, listContracts } from '../api'
 import type { AskResponse, ContractSummary } from '../types'
 import { Card, Detail, ErrorBox, Icon, Quote, Spinner } from './ui'
+import RichAnswer from './RichAnswer'
 
 interface Msg { role: 'user' | 'assistant'; text: string; resp?: AskResponse }
 
@@ -96,7 +97,7 @@ function Answer({ resp }: { resp: AskResponse }) {
       <div className="mb-3 flex items-center gap-2 text-xs capitalize text-faint">
         <Icon name="scale" className="h-3.5 w-3.5 text-warn" /> {resp.intent?.replace(/_/g, ' ')} · confidence: {resp.confidence}
       </div>
-      <p className="whitespace-pre-wrap text-[15px] leading-7 text-ink">{resp.answer}</p>
+      <RichAnswer text={resp.answer} citations={items.map(e => e.citation)} />
       {items.length > 0 && (
         <div className="mt-3">
           <div className="mb-1 text-xs text-faint">Citations</div>

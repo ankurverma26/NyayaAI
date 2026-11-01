@@ -7,6 +7,7 @@ corpus + model and are skipped automatically if those are not available.
 from __future__ import annotations
 
 import importlib.util
+import zlib
 from pathlib import Path
 
 import numpy as np
@@ -52,7 +53,7 @@ class FakeEmbedder:
         out = np.zeros((len(texts), 64), dtype=np.float32)
         for i, t in enumerate(texts):
             for tok in tokenize(t):
-                out[i, hash(tok) % 64] += 1.0
+                out[i, zlib.crc32(tok.encode()) % 64] += 1.0  # stable across runs (built-in hash() is randomised per process)
             n = np.linalg.norm(out[i])
             if n:
                 out[i] /= n
