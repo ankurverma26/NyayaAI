@@ -8,6 +8,20 @@ import type {
 const baseURL = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_API_URL ?? ''
 const http = axios.create({ baseURL, timeout: 180_000 }) // first /ask call loads the embedding model
 
+// The API sends UTC times without a timezone tag (e.g. "2026-10-30T11:23:56").
+// Tag them as UTC so the browser converts them to local time (IST) correctly.
+const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?$/
+function markUtc(value: unknown): unknown {
+  if (typeof value === 'string') return NAIVE_DATETIME.test(value) ? `${value.replace(' ', 'T')}Z` : value
+  if (Array.isArray(value)) return value.map(markUtc)
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, markUtc(v)]))
+  }
+  return value
+}
+http.interceptors.response.use((res) => { res.data = markUtc(res.data); return res })
+
+
 export function errMsg(e: unknown): string {
   if (axios.isAxiosError(e)) {
     const d = e.response?.data?.detail

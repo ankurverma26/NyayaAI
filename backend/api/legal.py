@@ -19,7 +19,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -66,6 +66,16 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/legal", tags=["Legal research"])
 trace_router = APIRouter(prefix="/api/analysis", tags=["Trace"])
+
+
+IST = timezone(timedelta(hours=5, minutes=30))  # India has no daylight saving time
+
+
+def _ist(dt: datetime) -> str:
+    """Format a database timestamp (UTC) as Indian Standard Time."""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST).strftime("%Y-%m-%d %H:%M IST")
 
 
 def _natural_key(number: str) -> tuple[int, str]:
@@ -298,7 +308,7 @@ async def finding_trace(finding_id: int, session: AsyncSession = Depends(get_ses
                 )).scalar_one_or_none()
                 if last is not None:
                     sec_res = ((last.details or {}).get("sections") or {}).get(sec.section_number if sec else "", {})
-                    detail["last_live_check"] = f"{last.checked_at:%Y-%m-%d}: {last.outcome}"
+                    detail["last_live_check"] = f"{_ist(last.checked_at)}: {last.outcome}"
                     detail["this_section"] = sec_res.get("status", "not checked")
                 else:
                     detail["last_live_check"] = "never checked against the official source"

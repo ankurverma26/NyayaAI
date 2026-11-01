@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import Any, Callable, Optional
 
 from sqlalchemy import select
@@ -14,6 +14,15 @@ from backend.legal_sync.fetch import fetch_text
 from backend.legal_sync.service import check_source
 
 ALERT_STATUSES = {"changed": "differs from the official text", "omitted_or_repealed": "appears omitted or repealed in the official text"}
+
+
+def _utc_iso(dt: Optional[datetime]) -> Optional[str]:
+    """ISO string that always carries a timezone (the database stores UTC without one)."""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.isoformat()
 
 
 async def _latest_check(session: AsyncSession, source_id: int, with_fingerprint: bool = False) -> Optional[SourceCheck]:
@@ -97,7 +106,7 @@ async def latest_status(session: AsyncSession) -> list[dict[str, Any]]:
                        if info.get("status") != "verified"]
         out.append({
             "source_id": src.id, "title": src.title, "short_name": src.short_name, "url": src.url, "law_status": src.status,
-            "last_checked": last.checked_at.isoformat() if last and last.checked_at else None,
+            "last_checked": _utc_iso(last.checked_at) if last else None,
             "outcome": last.outcome if last else "never_checked",
             "counts": (last.counts or {}) if last else {},
             "changed_since_last": bool(last.changed_since_last) if last else False,
